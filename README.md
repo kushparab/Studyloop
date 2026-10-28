@@ -23,7 +23,7 @@ StudyLoop transforms messy syllabi, assignment notices, and exam dates into a dy
 
 - **Frontend:** Plain JavaScript, React 18, Vite, Mobile-first Plain CSS (zero UI libraries, zero TypeScript).
 - **Backend Proxy:** Express (Port 3001) with 45-second timeout, input validation, and single retry.
-- **Provider Support:** Multi-provider client supporting **NVIDIA NIM** (`nvapi-...`), **Google Gemini** (`AIza...`), and **OpenAI** (`sk-...`).
+- **Provider Support:** Multi-provider client supporting **Groq** (`gsk_...`), **NVIDIA NIM** (`nvapi-...`), **Google Gemini** (`AIza...`), and **OpenAI** (`sk-...`).
 - **Engine Core:** 100% deterministic pure functions in `src/engine/` (`priority.js`, `planner.js`, `clashes.js`, `mastery.js`).
 - **Unit Testing:** Vitest (26 passing tests across engine, server schemas, and client fallbacks).
 - **Storage:** Client-side persistence via `localStorage` (restores state seamlessly across refreshes).
@@ -81,8 +81,8 @@ StudyLoop is pre-configured for 1-click deployment on [Vercel](https://vercel.co
    - Vercel automatically detects **Vite** (Build command: `vite build`, Output directory: `dist`).
 3. **Environment Variables:**
    - Add the following in the **Environment Variables** section:
-     - `AI_API_KEY`: `your_nim_or_gemini_or_openai_api_key` (e.g. `nvapi-...`)
-     - `AI_MODEL`: `meta/llama-3.2-11b-vision-instruct` (or your chosen provider model)
+     - `AI_API_KEY`: `your_groq_or_nim_or_gemini_api_key` (e.g. `gsk_...` or `nvapi-...`)
+     - `AI_MODEL`: `openai/gpt-oss-120b` (for Groq) or `meta/llama-3.2-11b-vision-instruct` (for NVIDIA)
 4. **Deploy:**
    - Click **Deploy**.
    - Vercel routes `/api/*` to the serverless proxy in `api/index.js` (with a 60-second execution window configured in `vercel.json`) and serves the Vite single-page application at the root.

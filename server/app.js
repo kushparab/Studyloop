@@ -22,7 +22,9 @@ app.get('/api', (req, res) => {
 app.get('/api/health', (req, res) => {
   const apiKey = process.env.AI_API_KEY || '';
   const hasKey = Boolean(apiKey.trim());
-  const provider = apiKey.startsWith('nvapi-')
+  const provider = apiKey.startsWith('gsk_')
+    ? 'groq'
+    : apiKey.startsWith('nvapi-')
     ? 'nvidia'
     : apiKey.startsWith('sk-')
     ? 'openai'

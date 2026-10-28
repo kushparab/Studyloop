@@ -23,14 +23,58 @@ export function stripFences(text) {
 }
 
 /**
- * Universal provider dispatcher supporting NVIDIA, OpenAI, and Gemini.
+ * Universal provider dispatcher supporting Groq, NVIDIA, OpenAI, and Gemini.
  */
 async function sendProviderRequest({ apiKey, model, systemPrompt, userPrompt }) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 50000);
 
   try {
-    // 1. NVIDIA NIM Provider (keys starting with nvapi-)
+    // 1. Groq Provider (keys starting with gsk_)
+    if (apiKey.startsWith('gsk_')) {
+      const groqModel = model || 'openai/gpt-oss-120b';
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        signal: controller.signal,
+        body: JSON.stringify({
+          model: groqModel,
+          messages: [
+            {
+              role: 'system',
+              content: `${systemPrompt}\n\nIMPORTANT: Return ONLY valid JSON with no markdown code fences and no conversational explanation.`
+            },
+            {
+              role: 'user',
+              content: userPrompt
+            }
+          ],
+          response_format: { type: 'json_object' },
+          temperature: 0.2
+        })
+      });
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(
+          `Groq provider error (HTTP ${response.status}): ${
+            errData.error?.message || response.statusText
+          }`
+        );
+      }
+
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content;
+      if (!content) {
+        throw new Error('Groq provider returned empty choice response');
+      }
+      return content;
+    }
+
+    // 2. NVIDIA NIM Provider (keys starting with nvapi-)
     if (apiKey.startsWith('nvapi-')) {
       const normalizedModel = model.includes('/') ? model : `nvidia/${model}`;
       const response = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
@@ -160,8 +204,13 @@ async function sendProviderRequest({ apiKey, model, systemPrompt, userPrompt }) 
  * @returns {Promise<object>} Sanitized and validated data
  */
 export async function callAIWithValidation({ systemPrompt, userPrompt, validator, validatorArg }) {
-  const apiKey = process.env.AI_API_KEY;
-  const model = process.env.AI_MODEL || 'meta/llama-3.2-11b-vision-instruct';
+  const apiKey = process.env.AI_API_KEY || '';
+  const defaultModel = apiKey.startsWith('gsk_')
+    ? 'openai/gpt-oss-120b'
+    : apiKey.startsWith('nvapi-')
+    ? 'meta/llama-3.2-11b-vision-instruct'
+    : 'gemini-2.0-flash';
+  const model = process.env.AI_MODEL || defaultModel;
 
   if (!apiKey || !apiKey.trim()) {
     throw new Error('AI_API_KEY_MISSING');
