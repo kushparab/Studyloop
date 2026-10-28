@@ -53,7 +53,7 @@ Edit `.env` with your API key:
 ```env
 PORT=3001
 AI_API_KEY=your_key_here
-AI_MODEL=nvidia/nemotron-3.5-super-vl-120b-a12b
+AI_MODEL=meta/llama-3.2-11b-vision-instruct
 ```
 
 ### 3. Run Development Server
@@ -82,7 +82,7 @@ StudyLoop is pre-configured for 1-click deployment on [Vercel](https://vercel.co
 3. **Environment Variables:**
    - Add the following in the **Environment Variables** section:
      - `AI_API_KEY`: `your_nim_or_gemini_or_openai_api_key` (e.g. `nvapi-...`)
-     - `AI_MODEL`: `nvidia/nemotron-3.5-super-vl-120b-a12b` (or your chosen provider model)
+     - `AI_MODEL`: `meta/llama-3.2-11b-vision-instruct` (or your chosen provider model)
 4. **Deploy:**
    - Click **Deploy**.
    - Vercel routes `/api/*` to the serverless proxy in `api/index.js` (with a 60-second execution window configured in `vercel.json`) and serves the Vite single-page application at the root.

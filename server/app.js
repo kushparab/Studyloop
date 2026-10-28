@@ -183,7 +183,15 @@ app.post('/api/diagnose', async (req, res) => {
     return res.json({ mistakes: [] });
   }
 
-  const systemPrompt = `You are a study coach. For each wrong answer classify the mistake as concept_gap, calculation_slip, careless_error or misread_question, give a one-sentence reason and fix tip. For concept_gap only, add 2 new practice questions. Return only JSON.
+  // Prioritize top 3 mistakes to prevent excessive generation latency
+  const prioritizedWrong = wrongAnswers.slice(0, 3);
+
+  const systemPrompt = `You are a concise study coach. For each wrong answer:
+1. Classify type as "concept_gap", "calculation_slip", "careless_error", or "misread_question".
+2. reason: 1 concise sentence (under 15 words).
+3. fixTip: 1 actionable tip (under 15 words).
+4. For concept_gap only, add 2 brief practice questions (4 options, 1 correct, concise explanation under 10 words).
+Return ONLY JSON matching schema:
 
 Schema shape:
 {
@@ -194,25 +202,25 @@ Schema shape:
       "topicId": "${topic?.id || 't-1'}",
       "userAnswerIndex": 1,
       "type": "concept_gap" | "calculation_slip" | "careless_error" | "misread_question",
-      "reason": "One-sentence diagnosis of why this mistake occurred",
-      "fixTip": "One-sentence actionable fix tip",
+      "reason": "One concise sentence reason",
+      "fixTip": "One concise actionable tip",
       "practice": [
         {
           "id": "p-1",
           "topicId": "${topic?.id || 't-1'}",
-          "question": "Practice question 1",
+          "question": "Brief practice question",
           "options": ["A", "B", "C", "D"],
           "correctIndex": 0,
-          "explanation": "Why correct",
+          "explanation": "Brief explanation",
           "conceptTag": "Tag"
         },
         {
           "id": "p-2",
           "topicId": "${topic?.id || 't-1'}",
-          "question": "Practice question 2",
+          "question": "Brief practice question 2",
           "options": ["A", "B", "C", "D"],
-          "correctIndex": 2,
-          "explanation": "Why correct",
+          "correctIndex": 1,
+          "explanation": "Brief explanation",
           "conceptTag": "Tag"
         }
       ]
@@ -223,7 +231,7 @@ Schema shape:
   try {
     const data = await callAIWithValidation({
       systemPrompt,
-      userPrompt: `Diagnose these missed quiz questions for topic "${topic?.name || 'Study Topic'}":\n${JSON.stringify(wrongAnswers, null, 2)}`,
+      userPrompt: `Diagnose these missed quiz questions for topic "${topic?.name || 'Study Topic'}":\n${JSON.stringify(prioritizedWrong, null, 2)}`,
       validator: validateDiagnose
     });
 

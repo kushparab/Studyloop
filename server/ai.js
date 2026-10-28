@@ -27,7 +27,7 @@ export function stripFences(text) {
  */
 async function sendProviderRequest({ apiKey, model, systemPrompt, userPrompt }) {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 45000);
+  const timeoutId = setTimeout(() => controller.abort(), 50000);
 
   try {
     // 1. NVIDIA NIM Provider (keys starting with nvapi-)
@@ -52,6 +52,7 @@ async function sendProviderRequest({ apiKey, model, systemPrompt, userPrompt }) 
               content: userPrompt
             }
           ],
+          max_tokens: 1500,
           temperature: 0.2
         })
       });
@@ -66,7 +67,8 @@ async function sendProviderRequest({ apiKey, model, systemPrompt, userPrompt }) 
       }
 
       const data = await response.json();
-      const content = data.choices?.[0]?.message?.content;
+      const messageObj = data.choices?.[0]?.message;
+      const content = messageObj?.content || messageObj?.reasoning_content;
       if (!content) {
         throw new Error('NVIDIA provider returned empty choice response');
       }
@@ -159,7 +161,7 @@ async function sendProviderRequest({ apiKey, model, systemPrompt, userPrompt }) 
  */
 export async function callAIWithValidation({ systemPrompt, userPrompt, validator, validatorArg }) {
   const apiKey = process.env.AI_API_KEY;
-  const model = process.env.AI_MODEL || 'nvidia/nemotron-3.5-super-vl-120b-a12b';
+  const model = process.env.AI_MODEL || 'meta/llama-3.2-11b-vision-instruct';
 
   if (!apiKey || !apiKey.trim()) {
     throw new Error('AI_API_KEY_MISSING');
@@ -176,7 +178,7 @@ export async function callAIWithValidation({ systemPrompt, userPrompt, validator
     });
   } catch (err) {
     if (err.name === 'AbortError') {
-      throw new Error('AI request timed out after 45 seconds');
+      throw new Error('AI request timed out after 50 seconds');
     }
     throw err;
   }
@@ -208,7 +210,7 @@ export async function callAIWithValidation({ systemPrompt, userPrompt, validator
     });
   } catch (err) {
     if (err.name === 'AbortError') {
-      throw new Error('AI retry request timed out after 45 seconds');
+      throw new Error('AI retry request timed out after 50 seconds');
     }
     throw err;
   }

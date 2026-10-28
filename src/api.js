@@ -19,9 +19,11 @@ const FALLBACK_BANNER = 'Using sample data (AI unavailable)';
 /**
  * Helper to execute client fetch with client-side abort timeout.
  */
-async function fetchWithTimeout(url, options = {}, timeoutMs = 50000) {
+async function fetchWithTimeout(url, options = {}, timeoutMs = 55000) {
   const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeoutMs);
+  const id = setTimeout(() => {
+    controller.abort(new Error(`StudyLoop API request timed out after ${Math.round(timeoutMs / 1000)}s`));
+  }, timeoutMs);
 
   try {
     const res = await fetch(url, {
