@@ -1,91 +1,100 @@
-# StudyLoop 🔁🎓
+# StudyLoop 🔁
 
-> **AI-Guided Study Planning & Diagnostic Closed Loop**  
-> *Built for the Education & Student Life Track (6-Hour Hackathon Project)*
+> **Hand-Crafted Study Notebook & Adaptive Diagnostic Loop**  
+> *What to study today, adjusted by what you got wrong.*  
+> Built for the Education & Student Life Track
 
-StudyLoop transforms messy syllabi, assignment notices, and exam dates into a dynamically balanced daily study schedule. It pairs a **deterministic pure-function planning engine** with **AI-powered mistake diagnosis**: every quiz error re-weights future study blocks toward your exact weak spots, raising your overall readiness score.
+StudyLoop turns messy syllabi, course announcements, Discord messages, and exam dates into a dynamically balanced daily study schedule. It combines a **deterministic pure-function planning engine** with an **adaptive mistake diagnosis loop**: every quiz mistake re-weights your future study sessions toward your exact weak spots, raising your overall readiness score.
 
 ---
 
-## 🌟 The Core Loop
+## 📖 The Core Loop
 
 ```
-1. CAPTURE  ──► Paste messy student chat or announcements (AI extracts dates & topics)
-2. CONFIRM  ──► Verify topics, add missing dates, and validate low-confidence rows
-3. PLAN     ──► Pure mathematical planning engine schedules daily study blocks & flags clashes
-4. QUIZ     ──► 5-question active recall check (keyboard navigable, one question at a time)
-5. INSIGHTS ──► AI classifies mistakes (Concept Gap vs Slip), engine dynamically re-weights future plan!
+1. CAPTURE  ──► Drop in messy student chat, announcements, or syllabus text
+2. CONFIRM  ──► Verify topics, resolve date ambiguities, and approve study scope
+3. PLAN     ──► Mathematical engine schedules daily blocks & detects overload clashes
+4. QUIZ     ──► 5-question active recall checkpoint (keyboard-ready, one question at a time)
+5. INSIGHTS ──► Classifies mistakes, engine reshuffles future blocks to close knowledge gaps!
 ```
+
+---
+
+## ✨ Features & Design Highlights
+
+### 📓 Hand-Made Study Notebook UI
+- **Tactile Paper Aesthetic:** Warm paper background (`#F4EFE6`), crisp notebook card surfaces (`#FFFDF8`), dark ink (`#14110F`), vermilion accent fills (`#C93A1E`), and highlighter yellow callouts (`#F5C842`).
+- **Confident Geometry:** 2px solid ink borders, tactile 4px hard unblurred shadows (`4px 4px 0 #14110F`) that lift on hover and depress on click.
+- **Dotted Grid Texture:** Subtle 20px `#E5DDCF` dotted grid pattern across the notebook paper background.
+- **Lined Paper Textarea:** 32px ruled notebook paper texture in the capture input for comfortable typing.
+- **Inline Line SVGs:** 100% custom 2px line SVG icons — zero emojis used as UI icons.
+- **Editorial Typography:** [Fraunces](https://fonts.google.com/specimen/Fraunces) for expressive serif headings, [DM Sans](https://fonts.google.com/specimen/DM+Sans) for legible body text, and [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono) for dates, minutes, and scores.
+
+### 📐 Desktop Two-Column Layout & Stepper
+- **Centered 1200px Container:** The brand mark, tagline, and screen cards share the exact same left margin on desktop.
+- **Asymmetric Desktop Grid:** At $\ge 1024\text{px}$, the screen splits into a 62% primary workspace and a 38% companion sidebar featuring the "How StudyLoop works" 4-step guide and contextual notebook tips. Stacks cleanly on mobile.
+- **High-Contrast Stepper:** Active step labels render in bold dark ink (`#14110F`) with $>14:1$ AAA contrast ratio across all 5 workflow steps (Capture, Confirm, Plan, Quiz, Insights). Compact single-row layout under 64px on mobile devices.
+
+### ⚙️ Deterministic Planning Engine
+- **Hallucination-Free Math:** 100% pure functions in `src/engine/` calculate urgency, topic priorities, and daily schedules without randomness or drift.
+- **Clash & Crunch Detection:** Detects same-day exam clashes, 48-hour exam proximities, and overload situations when daily study capacity is exceeded.
+- **Block Allocation:** Automatically sizes study blocks to $\ge 20$ minutes rounded to 5-minute increments, capped at 3 topics per day.
+
+### 🧠 Adaptive Mistake Diagnosis
+- **Mistake Taxonomy:** Categorizes errors into distinct types: *Concept Gap*, *Calculation Slip*, *Careless Error*, and *Misread Question*.
+- **Plan Reshuffle:** Dynamically shifts upcoming study blocks from high-mastery topics to topics with detected concept gaps, calculating before-and-after schedule diffs.
+- **Targeted Practice:** Generates follow-up reinforcement questions for identified concept gaps.
+
+### ☁️ Cloud Persistence (Firebase Realtime Database)
+- **Automatic Cloud Sync:** Seamlessly syncs approved syllabus topics, generated study plans, and diagnostic results to a Firebase Realtime Database in the background.
+- **Dual Persistence:** Automatically pairs browser `localStorage` persistence with remote cloud backup.
 
 ---
 
 ## 🛠️ Tech Stack & Architecture
 
-- **Frontend:** Plain JavaScript, React 18, Vite, Mobile-first Plain CSS (zero UI libraries, zero TypeScript).
-- **Backend Proxy:** Express (Port 3001) with 45-second timeout, input validation, and single retry.
-- **Provider Support:** Multi-provider client supporting **Groq** (`gsk_...`), **NVIDIA NIM** (`nvapi-...`), **Google Gemini** (`AIza...`), and **OpenAI** (`sk-...`).
-- **Engine Core:** 100% deterministic pure functions in `src/engine/` (`priority.js`, `planner.js`, `clashes.js`, `mastery.js`).
-- **Unit Testing:** Vitest (26 passing tests across engine, server schemas, and client fallbacks).
-- **Storage:** Client-side persistence via `localStorage` (restores state seamlessly across refreshes).
-- **Accessibility:** WCAG AA compliant contrast, logical tab ordering, visible 3px focus rings, $\ge 44\text{px}$ touch targets, and color-and-text badges.
+- **Frontend:** React 18, Vite, Vanilla CSS with custom design tokens (`src/styles/theme.css`). Zero heavy UI component libraries.
+- **Backend / Serverless:** Express local proxy server (`server/`) and Vercel Serverless Function (`api/index.js`).
+- **Database:** Firebase Realtime Database integration for cloud session storage.
+- **Testing:** [Vitest](https://vitest.dev/) automated test suite with 26 unit and integration tests.
+- **Accessibility:** WCAG AA/AAA compliant contrast ratios, 3px focus rings with 2px offset, minimum 44px tap targets, and full keyboard navigation.
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Getting Started
 
 ### 1. Clone & Install
 ```bash
-# Clone the repository
-git clone https://github.com/kushparab/studyloop.git
-cd studyloop
-
-# Install dependencies
+git clone https://github.com/kushparab/Studyloop.git
+cd Studyloop
 npm install
 ```
 
-### 2. Environment Setup (Optional)
-StudyLoop includes complete offline sample fixtures and will work out of the box even without API keys. To connect live AI generation:
-
+### 2. Run Locally
 ```bash
-cp .env.example .env
-```
-Edit `.env` with your API key:
-```env
-PORT=3001
-AI_API_KEY=your_key_here
-AI_MODEL=meta/llama-3.2-11b-vision-instruct
-```
-
-### 3. Run Development Server
-```bash
-# Concurrently launches Vite (port 5173) and Express proxy (port 3001)
+# Starts the client and proxy concurrently
 npm run dev
 ```
 Open **`http://localhost:5173`** in your browser.
 
-### 4. Run Automated Test Suite
+> StudyLoop includes realistic student fixtures and runs fully offline with built-in sample data out of the box.
+
+### 3. Run Automated Tests
 ```bash
 npm test
 ```
+Runs all 26 unit and integration tests across the planning engine, server endpoints, and client fallback behavior.
 
 ---
 
-## 🌐 Deploy to Vercel
+## 🌐 Deployment to Vercel
 
-StudyLoop is pre-configured for 1-click deployment on [Vercel](https://vercel.com) using **Vercel Serverless Functions** and **Vite static hosting**:
+StudyLoop is pre-configured for automated deployment on [Vercel](https://vercel.com):
 
-1. **Import the Project:**
-   - Head to [Vercel Dashboard](https://vercel.com/new).
-   - Click **Add New Project** and import the `kushparab/studyloop` repository.
-2. **Framework Preset:**
-   - Vercel automatically detects **Vite** (Build command: `vite build`, Output directory: `dist`).
-3. **Environment Variables:**
-   - Add the following in the **Environment Variables** section:
-     - `AI_API_KEY`: `your_groq_or_nim_or_gemini_api_key` (e.g. `gsk_...` or `nvapi-...`)
-     - `AI_MODEL`: `openai/gpt-oss-120b` (for Groq) or `meta/llama-3.2-11b-vision-instruct` (for NVIDIA)
-4. **Deploy:**
-   - Click **Deploy**.
-   - Vercel routes `/api/*` to the serverless proxy in `api/index.js` (with a 60-second execution window configured in `vercel.json`) and serves the Vite single-page application at the root.
+1. **Connect Repository:** Import `kushparab/Studyloop` in the Vercel Dashboard.
+2. **Preset:** Select **Vite** (Build Command: `npm run build`, Output Directory: `dist`).
+3. **Serverless Functions:** Vercel automatically maps `/api/*` requests to `api/index.js` as defined in `vercel.json`.
+4. **Deploy:** Click **Deploy**. Each commit pushed to the `main` branch automatically triggers a redeployment.
 
 ---
 
@@ -103,44 +112,35 @@ StudyLoop is pre-configured for 1-click deployment on [Vercel](https://vercel.co
    $$\text{Readiness \%} = \frac{\sum (\text{weight}_i \times \text{mastery}_i)}{\sum \text{weight}_i} \times 100$$
 
 4. **Clash Detection Rules:**
-   - **Rule (a):** 2 or more deadlines falling on the same day (`same_day_deadlines`).
-   - **Rule (b):** Exam within 48 hours ($\le 2$ days) of another deadline (`exam_proximity`).
-   - **Rule (c):** 2+ deadlines on a day with $< 3$ available study hours (`overload`).
+   - **Same-Day Deadlines:** Multiple deadlines on the same calendar day.
+   - **Exam Proximity:** An exam within 48 hours ($\le 2$ days) of another deadline.
+   - **Overload:** Multiple deadlines on a day where available study hours are $< 3\text{h}$.
 
 ---
 
-## 📋 Manual QA Test Checklist
+## 📋 Test Matrix
 
-| ID | Feature / Flow | Test Scenario | Expected Result | Status |
-|:---|:---|:---|:---|:---:|
-| **TC-01** | Capture Screen | Click "Load sample messy chat" | Textarea, today's date, and hours populate immediately | Pass |
-| **TC-02** | Capture Screen | Submit empty textarea | Inline error shows; extraction does not trigger | Pass |
-| **TC-03** | Capture Screen | Hours input validation | Enforces min 0.5h; prevents negative study capacity | Pass |
-| **TC-04** | Extraction API | Offline proxy / invalid key fallback | App loads sample data with visible "(AI unavailable)" banner | Pass |
-| **TC-05** | Confirm Screen | Extracted item with null date | Row highlighted in amber; "Generate Plan" button disabled | Pass |
-| **TC-06** | Confirm Screen | Edit null date to valid `YYYY-MM-DD` | Highlight clears; "Generate Plan" button immediately unlocks | Pass |
-| **TC-07** | Confirm Screen | Low confidence item (< 0.6) | Badge shows "Low Conf"; clicking verifies item | Pass |
-| **TC-08** | Confirm Screen | Add / Delete table rows | New row created with defaults; deleted row removed from state | Pass |
-| **TC-09** | Plan Screen | Clash detection rule (a) | 2 deadlines on same day show warning & suggested action | Pass |
-| **TC-10** | Plan Screen | Clash detection rule (b) | Exam within 48h of another deadline shows warning & action | Pass |
-| **TC-11** | Plan Screen | Clash detection rule (c) | 2+ deadlines with < 3h available shows overload warning | Pass |
-| **TC-12** | Plan Screen | Daily study block sizing | Every block is ≥ 20m and rounded to nearest 5m | Pass |
-| **TC-13** | Plan Screen | Max 3 topics per day cap | No day contains more than 3 scheduled topic blocks | Pass |
-| **TC-14** | Plan Screen | Exam date boundary | Topics are never scheduled after their exam date | Pass |
-| **TC-15** | Quiz Screen | Single-question runner | Shows 1 question at a time with counter (e.g. 1 of 5) | Pass |
-| **TC-16** | Quiz Screen | Keyboard hotkeys | Pressing A–D or 1–4 selects option; Enter advances | Pass |
-| **TC-17** | Quiz Screen | Live Demo Mode toggle | "Auto-fill 100% wrong answers" fills wrong options and submits | Pass |
-| **TC-18** | Quiz Screen | Question review summary | Shows correct vs missed answers with explanations | Pass |
-| **TC-19** | Insights Screen | Mistake taxonomy display | Badges show text + color + icon (🔴 Concept Gap, etc.) | Pass |
-| **TC-20** | Insights Screen | Concept gap practice | Concept gap mistakes render 2 targeted practice questions | Pass |
-| **TC-21** | Insights Screen | Before & after readiness | Strikethrough before score, new score, and delta badge show | Pass |
-| **TC-22** | Insights Screen | Next 3 days schedule diff | Shows previous vs new minutes with "Why this changed" line | Pass |
-| **TC-23** | Persistence | Browser refresh (`F5`) | Restores current screen and all user data from localStorage | Pass |
-| **TC-24** | Accessibility | Keyboard navigation & focus | Visible 3px outline on all active elements; logical tab order | Pass |
-| **TC-25** | Responsiveness | Mobile viewport (360px width) | All cards, buttons, and tables fit without page horizontal break | Pass |
+| ID | Flow | Verification Scenario | Status |
+|:---|:---|:---|:---:|
+| **TC-01** | Capture | "Load sample messy chat" button populates text, date, and hours via inline line SVG | Pass |
+| **TC-02** | Capture | Form validation prevents submission with empty input | Pass |
+| **TC-03** | Capture | Daily capacity input enforces $\ge 0.5\text{h}$ positive numbers | Pass |
+| **TC-04** | Confirm | Missing dates trigger amber highlighter warnings and disable plan generation | Pass |
+| **TC-05** | Confirm | Adding or editing dates immediately unlocks plan generation | Pass |
+| **TC-06** | Confirm | Low confidence extractions are visually badged with manual verification toggle | Pass |
+| **TC-07** | Plan | Clash detection identifies same-day, proximity, and overload conflicts | Pass |
+| **TC-08** | Plan | Study blocks are rounded to 5-minute increments and capped at 3 topics/day | Pass |
+| **TC-09** | Plan | Topics are strictly bounded before their exam deadlines | Pass |
+| **TC-10** | Quiz | Keyboard navigation supports options A–D / 1–4 and Enter key | Pass |
+| **TC-11** | Quiz | Demo mode enables instant answer simulation for rapid evaluation | Pass |
+| **TC-12** | Insights | Mistake taxonomy categorizes errors into concept gaps and slips | Pass |
+| **TC-13** | Insights | Dynamic plan diff highlights schedule re-allocations and provides reasons | Pass |
+| **TC-14** | Sync | Firebase RTDB sync persists plan and diagnostic data to the cloud | Pass |
+| **TC-15** | Accessibility | Minimum 4.5:1 text contrast and 3px focus rings on all interactive elements | Pass |
+| **TC-16** | Layout | Responsive 360px mobile viewport with zero horizontal overflow | Pass |
 
 ---
 
-## 🔒 Security & Privacy Guarantee
-- **Zero API Key Leakage:** Keys are loaded strictly from the server `.env` file and are never sent or bundled into client code.
-- **Privacy:** Student notes and raw syllabus texts are never stored on external databases or logged to system logs.
+## 📄 License
+
+MIT License. Built for the Education & Student Life Track.

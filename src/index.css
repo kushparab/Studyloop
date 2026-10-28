@@ -55,6 +55,8 @@ body {
   font-family: var(--font-body);
   font-size: 1rem;
   background-color: var(--bg-paper);
+  background-image: radial-gradient(#E5DDCF 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
   color: var(--ink-primary);
   line-height: var(--line-height-body);
   -webkit-font-smoothing: antialiased;
@@ -100,20 +102,28 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-paper);
+  background-color: transparent;
 }
 
 /* Header - Notebook Banner with ink border & hard shadow */
 .app-header {
   background-color: var(--surface-card);
   border-bottom: var(--border-ink);
-  padding: var(--space-4) var(--space-5);
+  padding: 0;
+  box-shadow: 0 4px 0 var(--ink-primary);
+  width: 100%;
+}
+
+.header-inner {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-4);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  box-shadow: 0 4px 0 var(--ink-primary);
 }
 
 .header-brand {
@@ -148,10 +158,10 @@ body {
   color: var(--ink-muted);
 }
 
-/* Main Content Area - Left-aligned, max-width 960px */
+/* Main Content Area - Left-aligned, max-width 1200px */
 .app-main {
   flex: 1;
-  max-width: 960px;
+  max-width: 1200px;
   width: 100%;
   margin: 0 auto;
   padding: var(--space-5) var(--space-4);
@@ -232,40 +242,45 @@ body {
 .step-name {
   font-size: 0.875rem;
   font-weight: 700;
-  color: var(--ink-primary);
+  color: var(--ink-muted);
 }
 
 .step-desc-subtle {
   font-size: 0.75rem;
-  color: var(--ink-muted);
+  color: var(--ink-subtle);
 }
 
-/* Stepper: Current Step (filled ink on desktop, white text) */
+/* Stepper: Current Step — dark ink (#14110F) bold on paper/card background (14.9:1+ contrast) across all steps */
 .step-btn.is-active {
-  background-color: var(--ink-primary);
-  color: var(--surface-card);
+  background-color: var(--surface-card);
+  border: var(--border-ink);
   box-shadow: var(--shadow-hard);
 }
 
 .step-btn.is-active .step-number {
   background-color: var(--color-vermilion);
   color: var(--color-vermilion-text);
-  border-color: var(--color-vermilion);
+  border-color: var(--ink-primary);
 }
 
 .step-btn.is-active .step-name {
-  color: var(--surface-card);
+  color: var(--ink-primary) !important; /* Bold dark ink #14110F */
+  font-weight: 800;
 }
 
 .step-btn.is-active .step-desc-subtle {
-  color: #D6CEC3;
+  color: var(--ink-muted);
 }
 
 /* Stepper: Completed Steps (check icon, green accent indicator) */
 .step-btn.is-passed .step-number {
   background-color: var(--color-success);
   color: var(--color-success-text);
-  border-color: var(--color-success);
+  border-color: var(--ink-primary);
+}
+
+.step-btn.is-passed .step-name {
+  color: var(--ink-primary);
 }
 
 /* Mobile Stepper optimization: compact single row under 72px total height */
@@ -346,6 +361,135 @@ body {
 }
 
 /* Form Layout & Notebook Lined Inputs */
+.capture-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .capture-layout-grid {
+    grid-template-columns: 62% calc(38% - 32px);
+    gap: 32px;
+    align-items: start;
+  }
+}
+
+.capture-main-col {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.capture-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.sidebar-card {
+  background-color: var(--bg-paper);
+  border: var(--border-ink);
+  border-radius: var(--radius-box);
+  box-shadow: var(--shadow-hard-sm);
+  padding: var(--space-4);
+}
+
+.sidebar-card-title {
+  font-family: var(--font-heading);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+  margin-bottom: var(--space-3);
+  letter-spacing: -0.01em;
+}
+
+.sidebar-steps-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-steps-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+.sidebar-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--ink-primary);
+  color: var(--surface-card);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.sidebar-step-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-step-name {
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+
+.sidebar-step-desc {
+  color: var(--ink-muted);
+  margin-top: 2px;
+  font-size: 0.8125rem;
+}
+
+.tip-card {
+  background-color: var(--surface-card);
+  border: var(--border-ink);
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.tip-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-vermilion);
+  margin-bottom: var(--space-2);
+}
+
+.tip-title {
+  font-family: var(--font-heading);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+  margin: 0;
+}
+
+.tip-desc {
+  font-size: 0.875rem;
+  color: var(--ink-muted);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.btn-sample {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .capture-form {
   display: flex;
   flex-direction: column;
@@ -520,27 +664,7 @@ body {
   min-height: 44px;
 }
 
-.header-brand {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
 
-.brand-logo {
-  font-size: 1.75rem;
-}
-
-.brand-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--color-text);
-  line-height: 1.2;
-}
-
-.brand-tagline {
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
-}
 
 /* Badges */
 .badge {
@@ -619,156 +743,32 @@ body {
   border: 1px solid #c084fc;
 }
 
-/* Main Content Area */
-.app-main {
-  flex: 1;
-  max-width: 980px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 1.5rem 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* 5-Step Progress Bar - Neumorphic Stepper */
-.step-nav {
-  background-color: var(--bg-surface);
-  border: none;
-  border-radius: var(--radius-card);
-  padding: var(--space-3);
-  box-shadow: var(--shadow-raised);
-}
-
-.step-list {
-  display: flex;
-  list-style: none;
-  gap: var(--space-3);
-  overflow-x: auto;
-  padding: var(--space-1);
-}
-
-.step-item {
-  flex: 1;
-  min-width: 120px;
-}
-
-.step-btn {
-  width: 100%;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  background-color: var(--bg-surface);
-  border: none;
-  border-radius: var(--radius-control);
-  cursor: pointer;
-  text-align: left;
-  box-shadow: var(--shadow-raised-sm);
-  transition: box-shadow 150ms ease, background-color 150ms ease, color 150ms ease;
-}
-
-.step-btn:hover {
-  box-shadow: var(--shadow-raised);
-}
-
-.step-btn:active {
-  box-shadow: var(--shadow-inset);
-}
-
-.step-number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background-color: var(--bg-surface);
-  color: var(--text-secondary);
-  font-size: 0.8125rem;
-  font-weight: 700;
-  flex-shrink: 0;
-  box-shadow: var(--shadow-raised-sm);
-  transition: box-shadow 150ms ease, color 150ms ease;
-}
-
-.step-label-group {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.2;
-}
-
-.step-name {
-  font-size: 0.8125rem;
-  font-weight: var(--font-weight-headings);
-  color: var(--text-secondary);
-}
-
-.step-desc-subtle {
-  font-size: 0.6875rem;
-  color: var(--text-secondary);
-}
-
-/* Stepper: Current Step (inset shadow and accent number) */
-.step-btn.is-active {
-  background-color: var(--bg-surface);
-  box-shadow: var(--shadow-inset);
-}
-
-.step-btn.is-active .step-number {
-  box-shadow: var(--shadow-inset-sm);
-  color: var(--color-accent);
-  font-weight: 800;
-}
-
-.step-btn.is-active .step-name {
-  color: var(--color-accent);
-  font-weight: 700;
-}
-
-/* Stepper: Completed Steps (check icon with primary text) */
-.step-btn.is-passed {
-  box-shadow: var(--shadow-raised-sm);
-}
-
-.step-btn.is-passed .step-number {
-  color: var(--color-success);
-  font-weight: 800;
-  box-shadow: var(--shadow-raised-sm);
-}
-
-.step-btn.is-passed .step-name {
-  color: var(--text-primary);
-}
-
-/* Alert Banners */
+/* Alert Banners (Notebook Style) */
 .alert-banner {
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0.875rem 1rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-box);
+  border: var(--border-ink);
+  box-shadow: var(--shadow-hard-sm);
   font-size: 0.875rem;
   line-height: 1.4;
 }
 
 .alert-info {
-  background-color: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: #1e40af;
+  background-color: var(--surface-card);
+  color: var(--ink-primary);
 }
 
 .alert-success {
-  background-color: var(--color-success-bg);
-  border: 1px solid var(--color-success-border);
+  background-color: #E8F3ED;
   color: var(--color-success);
 }
 
 .alert-warning {
-  background-color: var(--color-warning-bg);
-  border: 1px solid var(--color-warning-border);
-  color: var(--color-warning);
+  background-color: #FEF7DA;
+  color: var(--ink-primary);
   flex-direction: column;
 }
 
@@ -787,108 +787,15 @@ body {
 }
 
 .alert-error {
-  background-color: var(--color-danger-bg);
-  border: 1px solid var(--color-danger-border);
+  background-color: #FDECE9;
   color: var(--color-danger);
 }
 
 .alert-icon {
-  font-size: 1.1rem;
-}
-
-/* Screen Card - Neumorphic raised surface */
-.screen-card {
-  background-color: var(--surface-card);
-  border: none;
-  border-radius: var(--radius-card);
-  padding: var(--space-5);
-  box-shadow: var(--shadow-raised);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-}
-
-.screen-header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.header-badge-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.screen-title {
-  font-size: 1.375rem;
-  font-weight: var(--font-weight-headings);
-  color: var(--text-primary);
-  line-height: 1.3;
-}
-
-.screen-desc {
-  font-size: 0.9375rem;
-  color: var(--text-secondary);
-  line-height: var(--line-height-base);
-}
-
-/* Form Layout */
-.capture-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.form-row-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
-}
-
-.label-with-action {
-  display: flex;
-  justify-content: space-between;
+  display: inline-flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.form-label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.label-subtle {
-  font-weight: 400;
-  color: var(--color-text-muted);
-}
-
-.form-input, .form-textarea {
-  width: 100%;
-  padding: 0.625rem 0.75rem;
-  font-size: 0.875rem;
-  font-family: inherit;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background-color: #ffffff;
-  color: var(--color-text);
-}
-
-.form-textarea {
-  resize: vertical;
-}
-
-.input-hint {
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
+  flex-shrink: 0;
+  color: inherit;
 }
 
 /* Tables in Confirm Screen */
