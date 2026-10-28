@@ -1,0 +1,57 @@
+/* ==========================================================================
+   StudyLoop Neumorphic (Soft UI) Design Tokens
+   Theme CSS Variables
+   ========================================================================== */
+
+:root {
+  /* Surfaces and Background (same color for cards so they appear extruded) */
+  --bg-surface: #E4E9F2;
+  --surface-card: #E4E9F2;
+
+  /* Neumorphic Shadows */
+  --shadow-raised: 6px 6px 12px #C2C9D6, -6px -6px 12px #FFFFFF;
+  --shadow-raised-sm: 3px 3px 6px #C2C9D6, -3px -3px 6px #FFFFFF;
+  --shadow-inset: inset 4px 4px 8px #C2C9D6, inset -4px -4px 8px #FFFFFF;
+  --shadow-inset-sm: inset 2px 2px 4px #C2C9D6, inset -2px -2px 4px #FFFFFF;
+
+  /* Text & Typography (strict AA contrast on #E4E9F2) */
+  --text-primary: #1B2433;
+  --text-secondary: #4A5568;
+
+  /* Accent & Action Tokens */
+  --color-accent: #2F4FD0;
+  --color-accent-hover: #223ca8;
+  --color-accent-contrast: #FFFFFF;
+
+  /* Semantic Status Tokens (always paired with icon + text) */
+  --color-success: #1E7A46;
+  --color-warning: #8A5A00;
+  --color-danger: #B3261E;
+
+  /* Component Edges & Borders for 3:1 WCAG UI Visibility */
+  --border-control: 1px solid #9AA5B8;
+  --border-warning-row: 2px solid #8A5A00;
+
+  /* Radii */
+  --radius-card: 20px;
+  --radius-control: 14px;
+  --radius-badge: 999px;
+
+  /* Typography Specs */
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-base: 16px;
+  --font-weight-headings: 600;
+  --line-height-base: 1.5;
+
+  /* Spacing Scale (4, 8, 12, 16, 24, 32) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  /* Interactive Focus: 3px solid with 2px offset (WCAG AA) */
+  --focus-outline: 3px solid #2F4FD0;
+  --focus-offset: 2px;
+}

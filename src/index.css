@@ -1,45 +1,48 @@
 /* ==========================================================================
    StudyLoop Design System & Plain CSS
-   Mobile-first, accessible, high-contrast, visible focus
+   Neumorphic (Soft UI) Theme Architecture
+   Accessible, high-contrast, visible focus, mobile-friendly
    ========================================================================== */
 
+@import './styles/theme.css';
+
 :root {
-  --color-bg: #f8fafc;
-  --color-surface: #ffffff;
-  --color-border: #cbd5e1;
-  --color-text: #0f172a;
-  --color-text-muted: #475569;
+  --color-bg: var(--bg-surface);
+  --color-surface: var(--surface-card);
+  --color-border: #9AA5B8;
+  --color-text: var(--text-primary);
+  --color-text-muted: var(--text-secondary);
   
-  --color-primary: #1d4ed8;
-  --color-primary-hover: #1e40af;
-  --color-primary-contrast: #ffffff;
+  --color-primary: var(--color-accent);
+  --color-primary-hover: var(--color-accent-hover);
+  --color-primary-contrast: var(--color-accent-contrast);
 
-  --color-secondary: #f1f5f9;
-  --color-secondary-hover: #e2e8f0;
-  --color-secondary-text: #0f172a;
+  --color-secondary: var(--bg-surface);
+  --color-secondary-hover: #D7DEE9;
+  --color-secondary-text: var(--text-primary);
 
-  --color-accent-subtle: #dbeafe;
-  --color-accent-text: #1e3a8a;
+  --color-accent-subtle: #D8E0F0;
+  --color-accent-text: var(--color-accent);
 
-  --color-success: #15803d;
-  --color-success-bg: #dcfce7;
-  --color-success-border: #86efac;
+  --color-success: var(--color-success);
+  --color-success-bg: #E4E9F2;
+  --color-success-border: var(--color-success);
 
-  --color-warning: #92400e;
-  --color-warning-bg: #fef3c7;
-  --color-warning-border: #f59e0b;
+  --color-warning: var(--color-warning);
+  --color-warning-bg: #E4E9F2;
+  --color-warning-border: var(--color-warning);
 
-  --color-danger: #b91c1c;
-  --color-danger-bg: #fee2e2;
-  --color-danger-border: #ef4444;
+  --color-danger: var(--color-danger);
+  --color-danger-bg: #E4E9F2;
+  --color-danger-border: var(--color-danger);
 
-  --focus-ring: 3px solid #2563eb;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  --focus-ring: var(--focus-outline);
+  --radius-sm: 8px;
+  --radius-md: var(--radius-control);
+  --radius-lg: var(--radius-card);
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+  --shadow-sm: var(--shadow-raised-sm);
+  --shadow-md: var(--shadow-raised);
 }
 
 /* Reset & Box Sizing */
@@ -50,17 +53,28 @@
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  line-height: 1.5;
+  font-family: var(--font-family);
+  font-size: var(--font-base);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  line-height: var(--line-height-base);
   -webkit-font-smoothing: antialiased;
 }
 
-/* Accessible focus styling */
+/* Accessible focus styling - 3px solid #2F4FD0 outline with 2px offset (never removed) */
 :focus-visible {
-  outline: var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 .sr-only {
@@ -79,18 +93,21 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: var(--bg-surface);
 }
 
-/* Header */
+/* Header - Neumorphic extruded surface */
 .app-header {
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  padding: 1rem 1.5rem;
+  background-color: var(--bg-surface);
+  border: none;
+  box-shadow: var(--shadow-raised);
+  padding: var(--space-4) var(--space-5);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: var(--space-3);
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
 }
 
 .header-brand {
@@ -204,25 +221,26 @@ body {
   gap: 1.5rem;
 }
 
-/* 5-Step Progress Bar */
+/* 5-Step Progress Bar - Neumorphic Stepper */
 .step-nav {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 0.5rem;
-  box-shadow: var(--shadow-sm);
+  background-color: var(--bg-surface);
+  border: none;
+  border-radius: var(--radius-card);
+  padding: var(--space-3);
+  box-shadow: var(--shadow-raised);
 }
 
 .step-list {
   display: flex;
   list-style: none;
-  gap: 0.25rem;
+  gap: var(--space-3);
   overflow-x: auto;
+  padding: var(--space-1);
 }
 
 .step-item {
   flex: 1;
-  min-width: 110px;
+  min-width: 120px;
 }
 
 .step-btn {
@@ -230,69 +248,88 @@ body {
   min-height: 44px;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: var(--radius-md);
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--bg-surface);
+  border: none;
+  border-radius: var(--radius-control);
   cursor: pointer;
   text-align: left;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  box-shadow: var(--shadow-raised-sm);
+  transition: box-shadow 150ms ease, background-color 150ms ease, color 150ms ease;
 }
 
 .step-btn:hover {
-  background-color: var(--color-secondary);
+  box-shadow: var(--shadow-raised);
+}
+
+.step-btn:active {
+  box-shadow: var(--shadow-inset);
 }
 
 .step-number {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background-color: var(--color-secondary-hover);
-  color: var(--color-text-muted);
-  font-size: 0.75rem;
+  background-color: var(--bg-surface);
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
   font-weight: 700;
   flex-shrink: 0;
+  box-shadow: var(--shadow-raised-sm);
+  transition: box-shadow 150ms ease, color 150ms ease;
 }
 
 .step-label-group {
   display: flex;
   flex-direction: column;
-  line-height: 1.1;
+  line-height: 1.2;
 }
 
 .step-name {
   font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--color-text-muted);
+  font-weight: var(--font-weight-headings);
+  color: var(--text-secondary);
 }
 
 .step-desc-subtle {
   font-size: 0.6875rem;
-  color: var(--color-text-muted);
+  color: var(--text-secondary);
 }
 
+/* Stepper: Current Step (inset shadow and accent number) */
 .step-btn.is-active {
-  background-color: var(--color-accent-subtle);
-  border-color: var(--color-primary);
+  background-color: var(--bg-surface);
+  box-shadow: var(--shadow-inset);
 }
 
 .step-btn.is-active .step-number {
-  background-color: var(--color-primary);
-  color: var(--color-primary-contrast);
+  box-shadow: var(--shadow-inset-sm);
+  color: var(--color-accent);
+  font-weight: 800;
 }
 
 .step-btn.is-active .step-name {
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: 700;
 }
 
+/* Stepper: Completed Steps (check icon with primary text) */
+.step-btn.is-passed {
+  box-shadow: var(--shadow-raised-sm);
+}
+
 .step-btn.is-passed .step-number {
-  background-color: var(--color-success-bg);
   color: var(--color-success);
+  font-weight: 800;
+  box-shadow: var(--shadow-raised-sm);
+}
+
+.step-btn.is-passed .step-name {
+  color: var(--text-primary);
 }
 
 /* Alert Banners */
@@ -349,39 +386,41 @@ body {
   font-size: 1.1rem;
 }
 
-/* Screen Card */
+/* Screen Card - Neumorphic raised surface */
 .screen-card {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
+  background-color: var(--surface-card);
+  border: none;
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-raised);
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--space-5);
 }
 
 .screen-header {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 .header-badge-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 .screen-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--color-text);
+  font-size: 1.375rem;
+  font-weight: var(--font-weight-headings);
+  color: var(--text-primary);
+  line-height: 1.3;
 }
 
 .screen-desc {
   font-size: 0.9375rem;
-  color: var(--color-text-muted);
+  color: var(--text-secondary);
+  line-height: var(--line-height-base);
 }
 
 /* Form Layout */
