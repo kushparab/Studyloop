@@ -36,7 +36,7 @@ StudyLoop transforms messy syllabi, assignment notices, and exam dates into a dy
 ### 1. Clone & Install
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/studyloop.git
+git clone https://github.com/kushparab/studyloop.git
 cd studyloop
 
 # Install dependencies
@@ -67,6 +67,25 @@ Open **`http://localhost:5173`** in your browser.
 ```bash
 npm test
 ```
+
+---
+
+## 🌐 Deploy to Vercel
+
+StudyLoop is pre-configured for 1-click deployment on [Vercel](https://vercel.com) using **Vercel Serverless Functions** and **Vite static hosting**:
+
+1. **Import the Project:**
+   - Head to [Vercel Dashboard](https://vercel.com/new).
+   - Click **Add New Project** and import the `kushparab/studyloop` repository.
+2. **Framework Preset:**
+   - Vercel automatically detects **Vite** (Build command: `vite build`, Output directory: `dist`).
+3. **Environment Variables:**
+   - Add the following in the **Environment Variables** section:
+     - `AI_API_KEY`: `your_nim_or_gemini_or_openai_api_key` (e.g. `nvapi-...`)
+     - `AI_MODEL`: `nvidia/nemotron-3.5-super-vl-120b-a12b` (or your chosen provider model)
+4. **Deploy:**
+   - Click **Deploy**.
+   - Vercel routes `/api/*` to the serverless proxy in `api/index.js` (with a 60-second execution window configured in `vercel.json`) and serves the Vite single-page application at the root.
 
 ---
 
