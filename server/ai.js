@@ -32,8 +32,13 @@ async function sendProviderRequest({ apiKey, model, systemPrompt, userPrompt }) 
   try {
     // 1. Groq Provider (keys starting with gsk_)
     if (apiKey.startsWith('gsk_')) {
-      const groqModel = model || 'openai/gpt-oss-120b';
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      let groqModel = model || 'openai/gpt-oss-120b';
+      // If user passed a model that is not provisioned on this Groq account (e.g. llama-3.3-70b-versatile), use active 120b model
+      if (groqModel.includes('llama')) {
+        groqModel = 'openai/gpt-oss-120b';
+      }
+
+      let response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${apiKey}`,
@@ -56,6 +61,34 @@ async function sendProviderRequest({ apiKey, model, systemPrompt, userPrompt }) 
           temperature: 0.2
         })
       });
+
+      // Graceful fallback to verified active model if custom model is not found
+      if (response.status === 404 && groqModel !== 'openai/gpt-oss-120b') {
+        groqModel = 'openai/gpt-oss-120b';
+        response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json'
+          },
+          signal: controller.signal,
+          body: JSON.stringify({
+            model: groqModel,
+            messages: [
+              {
+                role: 'system',
+                content: `${systemPrompt}\n\nIMPORTANT: Return ONLY valid JSON with no markdown code fences and no conversational explanation.`
+              },
+              {
+                role: 'user',
+                content: userPrompt
+              }
+            ],
+            response_format: { type: 'json_object' },
+            temperature: 0.2
+          })
+        });
+      }
 
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}));
