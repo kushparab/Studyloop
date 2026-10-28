@@ -1,57 +1,59 @@
 /* ==========================================================================
-   StudyLoop Neumorphic (Soft UI) Design Tokens
-   Theme CSS Variables
+   StudyLoop Design System — Hand-Made Study Notebook Theme
+   Tokens & CSS Variables
    ========================================================================== */
 
 :root {
-  /* Surfaces and Background (same color for cards so they appear extruded) */
-  --bg-surface: #E4E9F2;
-  --surface-card: #E4E9F2;
+  /* Paper & Ink Palette */
+  --bg-paper: #F4EFE6;
+  --surface-card: #FFFDF8;
+  --ink-primary: #14110F;
+  --ink-muted: #5B544B;
+  --ink-subtle: #8A8175;
 
-  /* Neumorphic Shadows */
-  --shadow-raised: 6px 6px 12px #C2C9D6, -6px -6px 12px #FFFFFF;
-  --shadow-raised-sm: 3px 3px 6px #C2C9D6, -3px -3px 6px #FFFFFF;
-  --shadow-inset: inset 4px 4px 8px #C2C9D6, inset -4px -4px 8px #FFFFFF;
-  --shadow-inset-sm: inset 2px 2px 4px #C2C9D6, inset -2px -2px 4px #FFFFFF;
+  /* Accent Vermilion (Used as a solid fill with white text) */
+  --color-vermilion: #C93A1E;
+  --color-vermilion-hover: #AE3118;
+  --color-vermilion-text: #FFFFFF;
 
-  /* Text & Typography (strict AA contrast on #E4E9F2) */
-  --text-primary: #1B2433;
-  --text-secondary: #4A5568;
+  /* Semantic Highlighter & Status Tokens */
+  --color-success: #1F6B4A;
+  --color-success-text: #FFFFFF;
+  --color-highlighter: #F5C842;
+  --color-highlighter-text: #14110F;
+  --color-danger: #C93A1E;
+  --color-danger-text: #FFFFFF;
 
-  /* Accent & Action Tokens */
-  --color-accent: #2F4FD0;
-  --color-accent-hover: #223ca8;
-  --color-accent-contrast: #FFFFFF;
+  /* Hard-Edged Notebook Borders & Shadows */
+  --border-ink: 2px solid #14110F;
+  --border-ink-sm: 1px solid #14110F;
+  --shadow-hard: 4px 4px 0 #14110F;
+  --shadow-hard-sm: 2px 2px 0 #14110F;
+  --shadow-hard-hover: 6px 6px 0 #14110F;
+  --shadow-none: 0 0 0 #14110F;
 
-  /* Semantic Status Tokens (always paired with icon + text) */
-  --color-success: #1E7A46;
-  --color-warning: #8A5A00;
-  --color-danger: #B3261E;
+  /* Geometry */
+  --radius-box: 10px;
+  --radius-sm: 6px;
+  --radius-pill: 999px;
 
-  /* Component Edges & Borders for 3:1 WCAG UI Visibility */
-  --border-control: 1px solid #9AA5B8;
-  --border-warning-row: 2px solid #8A5A00;
+  /* Typography */
+  --font-heading: 'Fraunces', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  --line-height-body: 1.55;
+  --line-height-tight: 1.2;
 
-  /* Radii */
-  --radius-card: 20px;
-  --radius-control: 14px;
-  --radius-badge: 999px;
-
-  /* Typography Specs */
-  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  --font-base: 16px;
-  --font-weight-headings: 600;
-  --line-height-base: 1.5;
-
-  /* Spacing Scale (4, 8, 12, 16, 24, 32) */
+  /* Spacing Scale (4, 8, 12, 16, 24, 32, 48) */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
   --space-5: 24px;
   --space-6: 32px;
+  --space-7: 48px;
 
-  /* Interactive Focus: 3px solid with 2px offset (WCAG AA) */
-  --focus-outline: 3px solid #2F4FD0;
+  /* Focus Indicator: 3px solid vermilion with 2px offset (WCAG AA compliant) */
+  --focus-ring: 3px solid #C93A1E;
   --focus-offset: 2px;
 }

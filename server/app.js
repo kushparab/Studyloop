@@ -14,7 +14,7 @@ app.get('/api', (req, res) => {
   res.json({
     status: 'ok',
     service: 'studyloop-proxy',
-    endpoints: ['/api/health', '/api/extract', '/api/quiz', '/api/diagnose']
+    endpoints: ['/api/health', '/api/extract', '/api/quiz', '/api/diagnose', '/api/sync']
   });
 });
 
@@ -22,6 +22,7 @@ app.get('/api', (req, res) => {
 app.get('/api/health', (req, res) => {
   const apiKey = process.env.AI_API_KEY || '';
   const hasKey = Boolean(apiKey.trim());
+  const rtdbUrl = process.env.FIREBASE_DATABASE_URL || '';
   const provider = apiKey.startsWith('gsk_')
     ? 'groq'
     : apiKey.startsWith('nvapi-')
@@ -34,9 +35,76 @@ app.get('/api/health', (req, res) => {
     status: 'ok',
     service: 'studyloop-proxy',
     hasApiKey: hasKey,
+    hasDatabase: Boolean(rtdbUrl.trim()),
     provider: hasKey ? provider : 'none',
     model: process.env.AI_MODEL || 'default'
   });
+});
+
+/**
+ * POST /api/sync
+ * Saves app state to Firebase Realtime Database (/studyloop/latest.json)
+ */
+app.post('/api/sync', async (req, res) => {
+  const rtdbUrl = process.env.FIREBASE_DATABASE_URL;
+  if (!rtdbUrl || !rtdbUrl.trim()) {
+    return res.status(200).json({ status: 'skipped', reason: 'No FIREBASE_DATABASE_URL configured' });
+  }
+
+  const { state } = req.body || {};
+  if (!state || typeof state !== 'object') {
+    return res.status(400).json({ error: 'Missing or invalid "state" payload' });
+  }
+
+  const cleanBase = rtdbUrl.trim().replace(/\/+$/, '');
+  const targetUrl = `${cleanBase}/studyloop/latest.json`;
+
+  try {
+    const response = await fetch(targetUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...state,
+        _syncedAt: new Date().toISOString()
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Firebase RTDB returned HTTP ${response.status}`);
+    }
+
+    return res.json({ status: 'synced', timestamp: new Date().toISOString() });
+  } catch (err) {
+    console.warn(`[Firebase RTDB Sync] Error writing to RTDB: ${err.message}`);
+    return res.status(502).json({ error: err.message, status: 'error' });
+  }
+});
+
+/**
+ * GET /api/sync
+ * Retrieves the latest saved session state from Firebase Realtime Database
+ */
+app.get('/api/sync', async (req, res) => {
+  const rtdbUrl = process.env.FIREBASE_DATABASE_URL;
+  if (!rtdbUrl || !rtdbUrl.trim()) {
+    return res.json({ state: null, reason: 'No FIREBASE_DATABASE_URL configured' });
+  }
+
+  const cleanBase = rtdbUrl.trim().replace(/\/+$/, '');
+  const targetUrl = `${cleanBase}/studyloop/latest.json`;
+
+  try {
+    const response = await fetch(targetUrl);
+    if (!response.ok) {
+      throw new Error(`Firebase RTDB returned HTTP ${response.status}`);
+    }
+
+    const state = await response.json();
+    return res.json({ state: state || null, status: 'ok' });
+  } catch (err) {
+    console.warn(`[Firebase RTDB Sync] Error reading from RTDB: ${err.message}`);
+    return res.status(502).json({ error: err.message, state: null });
+  }
 });
 
 /**
