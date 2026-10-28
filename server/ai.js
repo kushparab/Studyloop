@@ -32,11 +32,28 @@ async function sendProviderRequest({ apiKey, model, systemPrompt, userPrompt }) 
   try {
     // 1. Groq Provider (keys starting with gsk_)
     if (apiKey.startsWith('gsk_')) {
-      let groqModel = model || 'openai/gpt-oss-120b';
-      // If user passed a model that is not provisioned on this Groq account (e.g. llama-3.3-70b-versatile), use active 120b model
-      if (groqModel.includes('llama')) {
-        groqModel = 'openai/gpt-oss-120b';
+      let groqModel = model || 'qwen/qwen3.8-27b';
+      // Normalize unprovisioned or failure-prone models to verified fast instruct model
+      if (!groqModel || groqModel.includes('llama') || groqModel.includes('120b') || groqModel === 'default') {
+        groqModel = 'qwen/qwen3.8-27b';
       }
+
+      const requestBody = {
+        model: groqModel,
+        messages: [
+          {
+            role: 'system',
+            content: `${systemPrompt}\n\nIMPORTANT: Return ONLY valid JSON with no markdown code fences and no conversational explanation.`
+          },
+          {
+            role: 'user',
+            content: userPrompt
+          }
+        ],
+        response_format: { type: 'json_object' },
+        max_tokens: 750,
+        temperature: 0.2
+      };
 
       let response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
@@ -45,26 +62,13 @@ async function sendProviderRequest({ apiKey, model, systemPrompt, userPrompt }) 
           'Content-Type': 'application/json'
         },
         signal: controller.signal,
-        body: JSON.stringify({
-          model: groqModel,
-          messages: [
-            {
-              role: 'system',
-              content: `${systemPrompt}\n\nIMPORTANT: Return ONLY valid JSON with no markdown code fences and no conversational explanation.`
-            },
-            {
-              role: 'user',
-              content: userPrompt
-            }
-          ],
-          response_format: { type: 'json_object' },
-          temperature: 0.2
-        })
+        body: JSON.stringify(requestBody)
       });
 
-      // Graceful fallback to verified active model if custom model is not found
-      if (response.status === 404 && groqModel !== 'openai/gpt-oss-120b') {
-        groqModel = 'openai/gpt-oss-120b';
+      // Handle 429 rate limit with an exponential/safe backoff
+      if (response.status === 429) {
+        console.warn(`[Groq Provider] Rate limit 429 hit. Pausing 1500ms before retry...`);
+        await new Promise((r) => setTimeout(r, 1500));
         response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
           headers: {
@@ -72,21 +76,22 @@ async function sendProviderRequest({ apiKey, model, systemPrompt, userPrompt }) 
             'Content-Type': 'application/json'
           },
           signal: controller.signal,
-          body: JSON.stringify({
-            model: groqModel,
-            messages: [
-              {
-                role: 'system',
-                content: `${systemPrompt}\n\nIMPORTANT: Return ONLY valid JSON with no markdown code fences and no conversational explanation.`
-              },
-              {
-                role: 'user',
-                content: userPrompt
-              }
-            ],
-            response_format: { type: 'json_object' },
-            temperature: 0.2
-          })
+          body: JSON.stringify(requestBody)
+        });
+      }
+
+      // Auto-fallback: if response is 400 (e.g. Failed to generate JSON) or 404, retry with qwen/qwen3.8-27b
+      if (!response.ok && (response.status === 400 || response.status === 404)) {
+        console.warn(`[Groq Provider] ${groqModel} returned HTTP ${response.status}. Retrying with qwen/qwen3.8-27b...`);
+        requestBody.model = 'qwen/qwen3.8-27b';
+        response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json'
+          },
+          signal: controller.signal,
+          body: JSON.stringify(requestBody)
         });
       }
 
@@ -239,7 +244,7 @@ async function sendProviderRequest({ apiKey, model, systemPrompt, userPrompt }) 
 export async function callAIWithValidation({ systemPrompt, userPrompt, validator, validatorArg }) {
   const apiKey = process.env.AI_API_KEY || '';
   const defaultModel = apiKey.startsWith('gsk_')
-    ? 'openai/gpt-oss-120b'
+    ? 'qwen/qwen3.8-27b'
     : apiKey.startsWith('nvapi-')
     ? 'meta/llama-3.2-11b-vision-instruct'
     : 'gemini-2.0-flash';
